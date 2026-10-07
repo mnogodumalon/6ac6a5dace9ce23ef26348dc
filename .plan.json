@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "language": "de",
+  "understanding": {
+    "summary": "Eine Inventar-Anwendung für die Werkstatt: Alle Artikel, Werkzeuge und Materialien werden mit Menge, Standort, Zustand und Lieferant erfasst. Kategorien und Lieferanten sind eigene Stammdaten. Der Mindestbestand zeigt, was nachbestellt werden muss.",
+    "roles": [
+      "Werkstattleitung",
+      "Werkstattmitarbeiter"
+    ],
+    "main_tasks": [
+      "Inventar erfassen und pflegen",
+      "Bestände und Mindestbestände im Blick behalten",
+      "Kategorien und Lieferanten verwalten",
+      "Zustand von Geräten und Werkzeugen nachverfolgen"
+    ],
+    "platform_roles": [
+      {
+        "persona": "Werkstattleitung",
+        "role": "administrator",
+        "apps": [
+          "inventar",
+          "kategorien",
+          "lieferanten"
+        ]
+      },
+      {
+        "persona": "Werkstattmitarbeiter",
+        "role": "datenverarbeitung",
+        "apps": [
+          "inventar",
+          "kategorien",
+          "lieferanten"
+        ]
+      },
+      {
+        "persona": "Werkstattmitarbeiter",
+        "role": "standard",
+        "apps": [
+          "kategorien",
+          "lieferanten"
+        ]
+      }
+    ]
+  },
+  "flows": [
+    {
+      "slug": "artikel-aufnehmen",
+      "label": {
+        "de": "Artikel aufnehmen",
+        "en": "Add item"
+      },
+      "description": "Einen neuen Artikel mit Kategorie und Lieferant erfassen, ohne IDs von Hand zu suchen.",
+      "priority": "must",
+      "writes": [
+        {
+          "entity": "inventar",
+          "op": "create",
+          "when": "always",
+          "fields": {
+            "bezeichnung": "user",
+            "artikelnummer": "user",
+            "seriennummer": "user",
+            "kategorie": "picked",
+            "menge": "user",
+            "einheit": "user",
+            "mindestbestand": "user",
+            "standort": "user",
+            "zustand": "user",
+            "kaufdatum": "user",
+            "kaufpreis": "user",
+            "lieferant": "picked",
+            "notizen": "user"
+          },
+          "needs": {}
+        }
+      ],
+      "required": [],
+      "brief": "# Flow `artikel-aufnehmen` — Artikel aufnehmen\nEinen neuen Artikel mit Kategorie und Lieferant erfassen, ohne IDs von Hand zu suchen.\n\n## Your hook — import it, never rebuild what it owns\n`import { useArtikelAufnehmenFlow } from '@/lib/journey/flows/ArtikelAufnehmen';` — generated from the Schreibliste below. It OWNS the form(s), one record search per picked field (columns and filter from the plan) and the submit plan with every fixed and derived value. You compose: `flow.forms.<entity>` for <Bound>/<Field>, `{...flow.picks.<field>.select} {...flow.pick('<field>')}` (or `flow.pickMany` for a multi pick) for <EntitySelectStep>, `flow.validateStep(n)` in StepNav.onNext, `flow.submit` + `flow.formList` for SummaryStep/SuccessStep, `flow.reset()`; what the hook does not own reads through its door `flow.port` — availability `useOccupancy(flow.port, '<entity>', { resource })`, a count `useRecordCount(flow.port, …)` — never import servicePort next to the hook. Options: `steps` (field → step), `items` (how a hit reads, per pick: kategorie, lieferant), `initial`, `messages`. The hook's docblock in .lane-context.md shows the exact call. Never import servicePort, useStepForm, useJourneySubmit, useRecordSearch or useDashboardData in this page — check-intents refuses a page that uses the hook and any of them.\n\n## Steps (in this order)\n1. Kategorie aus der Liste wählen\n2. Lieferant wählen (optional)\n3. Bezeichnung, Menge, Einheit, Mindestbestand und Standort eingeben\n4. Zustand, Kaufdatum und Kaufpreis ergänzen\n\n## Schreibliste — the ONLY writes this flow makes (the gate compares your plan steps with this list)\n- creates `inventar`:\n    - `bezeichnung`: the user enters it (bind it through the layer: form.field/…)\n    - `artikelnummer`: the user enters it (bind it through the layer: form.field/…)\n    - `seriennummer`: the user enters it (bind it through the layer: form.field/…)\n    - `kategorie`: from the record the user picks in this flow\n    - `menge`: the user enters it (bind it through the layer: form.field/…)\n    - `einheit`: the user enters it (bind it through the layer: form.field/…)\n    - `mindestbestand`: the user enters it (bind it through the layer: form.field/…)\n    - `standort`: the user enters it (bind it through the layer: form.field/…)\n    - `zustand`: the user enters it (bind it through the layer: form.field/…)\n    - `kaufdatum`: the user enters it (bind it through the layer: form.field/…)\n    - `kaufpreis`: the user enters it (bind it through the layer: form.field/…)\n    - `lieferant`: from the record the user picks in this flow\n    - `notizen`: the user enters it (bind it through the layer: form.field/…)\n\n## Reads\n- `kategorien` columns kategorie_name\n- `lieferanten` columns firmenname, ort\n\n## Success page\n- shows: `inventar.bezeichnung`, `inventar.menge`, `inventar.standort`\n- next flows to offer: `bestand-aendern`\n\n## Never write these — another flow or a tool owns them\n"
+    },
+    {
+      "slug": "bestand-aendern",
+      "label": {
+        "de": "Bestand ändern",
+        "en": "Adjust stock"
+      },
+      "description": "Einen Artikel suchen und die Menge nach Entnahme oder Wareneingang anpassen, ohne unter null zu fallen.",
+      "priority": "must",
+      "writes": [
+        {
+          "entity": "inventar",
+          "op": "update",
+          "when": "always",
+          "fields": {
+            "menge": "user"
+          },
+          "needs": {}
+        }
+      ],
+      "required": [],
+      "brief": "# Flow `bestand-aendern` — Bestand ändern\nEinen Artikel suchen und die Menge nach Entnahme oder Wareneingang anpassen, ohne unter null zu fallen.\n\n## Your hook — import it, never rebuild what it owns\n`import { useBestandAendernFlow } from '@/lib/journey/flows/BestandAendern';` — generated from the Schreibliste below. It OWNS the form(s), one record search per picked field (columns and filter from the plan) and the submit plan with every fixed and derived value. You compose: `flow.forms.<entity>` for <Bound>/<Field>, `{...flow.picks.<field>.select} {...flow.pick('<field>')}` (or `flow.pickMany` for a multi pick) for <EntitySelectStep>, `flow.validateStep(n)` in StepNav.onNext, `flow.submit` + `flow.formList` for SummaryStep/SuccessStep, `flow.reset()`; what the hook does not own reads through its door `flow.port` — availability `useOccupancy(flow.port, '<entity>', { resource })`, a count `useRecordCount(flow.port, …)` — never import servicePort next to the hook. Options: `steps` (field → step), `items` (how a hit reads, per pick), `initial`, `messages`. The hook's docblock in .lane-context.md shows the exact call. This flow CHANGES a record of `inventar`: `{...flow.picks.inventar.select} {...flow.pick('inventar')}` picks it, the hook prefills the form with its current values and updates THAT record — never a create step, never a list from useDashboardData. Never import servicePort, useStepForm, useJourneySubmit, useRecordSearch or useDashboardData in this page — check-intents refuses a page that uses the hook and any of them.\n\n## Steps (in this order)\n1. Artikel aus der Liste wählen\n2. Aktuelle Menge und Mindestbestand ansehen\n3. Neue Menge eingeben\n\n## Schreibliste — the ONLY writes this flow makes (the gate compares your plan steps with this list)\n- updates `inventar`:\n    - `menge`: the user enters it (bind it through the layer: form.field/…)\n\n## Reads\n- `inventar` columns bezeichnung, menge, einheit, mindestbestand, standort\n\n## Checks BEFORE the write (block the submit with the message when they fail)\n- custom (field=`inventar.menge`, rule=`menge >= 0`) — message: „Die Menge darf nicht unter null fallen.“\n\n## Success page\n- shows: `inventar.menge`, `inventar.mindestbestand`\n\n## Never write these — another flow or a tool owns them\n- `inventar.bezeichnung` (owner: intent `artikel-aufnehmen`)\n- `inventar.artikelnummer` (owner: intent `artikel-aufnehmen`)\n- `inventar.seriennummer` (owner: intent `artikel-aufnehmen`)\n- `inventar.kategorie` (owner: intent `artikel-aufnehmen`)\n- `inventar.einheit` (owner: intent `artikel-aufnehmen`)\n- `inventar.mindestbestand` (owner: intent `artikel-aufnehmen`)\n- `inventar.standort` (owner: intent `artikel-aufnehmen`)\n- `inventar.zustand` (owner: intent `artikel-aufnehmen`)\n- `inventar.kaufdatum` (owner: intent `artikel-aufnehmen`)\n- `inventar.kaufpreis` (owner: intent `artikel-aufnehmen`)\n- `inventar.lieferant` (owner: intent `artikel-aufnehmen`)\n- `inventar.notizen` (owner: intent `artikel-aufnehmen`)\n"
+    },
+    {
+      "slug": "zustand-melden",
+      "label": {
+        "de": "Zustand melden",
+        "en": "Report condition"
+      },
+      "description": "Zustand eines Artikels ändern, z. B. defekt oder in Reparatur, und den Standort vermerken.",
+      "priority": "nice",
+      "writes": [
+        {
+          "entity": "inventar",
+          "op": "update",
+          "when": "always",
+          "fields": {
+            "zustand": "user",
+            "standort": "user",
+            "notizen": "user"
+          },
+          "needs": {}
+        }
+      ],
+      "required": [],
+      "brief": "# Flow `zustand-melden` — Zustand melden\nZustand eines Artikels ändern, z. B. defekt oder in Reparatur, und den Standort vermerken.\n\n## Your hook — import it, never rebuild what it owns\n`import { useZustandMeldenFlow } from '@/lib/journey/flows/ZustandMelden';` — generated from the Schreibliste below. It OWNS the form(s), one record search per picked field (columns and filter from the plan) and the submit plan with every fixed and derived value. You compose: `flow.forms.<entity>` for <Bound>/<Field>, `{...flow.picks.<field>.select} {...flow.pick('<field>')}` (or `flow.pickMany` for a multi pick) for <EntitySelectStep>, `flow.validateStep(n)` in StepNav.onNext, `flow.submit` + `flow.formList` for SummaryStep/SuccessStep, `flow.reset()`; what the hook does not own reads through its door `flow.port` — availability `useOccupancy(flow.port, '<entity>', { resource })`, a count `useRecordCount(flow.port, …)` — never import servicePort next to the hook. Options: `steps` (field → step), `items` (how a hit reads, per pick), `initial`, `messages`. The hook's docblock in .lane-context.md shows the exact call. This flow CHANGES a record of `inventar`: `{...flow.picks.inventar.select} {...flow.pick('inventar')}` picks it, the hook prefills the form with its current values and updates THAT record — never a create step, never a list from useDashboardData. Never import servicePort, useStepForm, useJourneySubmit, useRecordSearch or useDashboardData in this page — check-intents refuses a page that uses the hook and any of them.\n\n## Steps (in this order)\n1. Artikel wählen\n2. Neuen Zustand wählen\n3. Standort und Notiz ergänzen\n\n## Schreibliste — the ONLY writes this flow makes (the gate compares your plan steps with this list)\n- updates `inventar`:\n    - `zustand`: the user enters it (bind it through the layer: form.field/…)\n    - `standort`: the user enters it (bind it through the layer: form.field/…)\n    - `notizen`: the user enters it (bind it through the layer: form.field/…)\n\n## Reads\n- `inventar` columns bezeichnung, zustand, standort\n\n## Success page\n- shows: `inventar.zustand`\n\n## Never write these — another flow or a tool owns them\n- `inventar.bezeichnung` (owner: intent `artikel-aufnehmen`)\n- `inventar.artikelnummer` (owner: intent `artikel-aufnehmen`)\n- `inventar.seriennummer` (owner: intent `artikel-aufnehmen`)\n- `inventar.kategorie` (owner: intent `artikel-aufnehmen`)\n- `inventar.menge` (owner: intent `artikel-aufnehmen`)\n- `inventar.einheit` (owner: intent `artikel-aufnehmen`)\n- `inventar.mindestbestand` (owner: intent `artikel-aufnehmen`)\n- `inventar.kaufdatum` (owner: intent `artikel-aufnehmen`)\n- `inventar.kaufpreis` (owner: intent `artikel-aufnehmen`)\n- `inventar.lieferant` (owner: intent `artikel-aufnehmen`)\n"
+    }
+  ],
+  "public_pages": [],
+  "tools": [],
+  "covered_by_platform": [
+    {
+      "wish": "Inventar erfassen, ändern und löschen",
+      "feature": "record_form"
+    },
+    {
+      "wish": "Artikel suchen und nach Kategorie oder Standort filtern",
+      "feature": "search_filter"
+    },
+    {
+      "wish": "Übersicht der Artikel je Kategorie, Lieferant oder Zustand",
+      "feature": "distribution_view"
+    },
+    {
+      "wish": "Inventarliste als Tabelle oder Excel",
+      "feature": "csv_json_export"
+    },
+    {
+      "wish": "Bilder und Dokumente zu Artikeln",
+      "feature": "record_attachments"
+    }
+  ],
+  "ownership": {
+    "inventar": {
+      "bezeichnung": "intent:artikel-aufnehmen",
+      "artikelnummer": "intent:artikel-aufnehmen",
+      "seriennummer": "intent:artikel-aufnehmen",
+      "kategorie": "intent:artikel-aufnehmen",
+      "menge": "intent:bestand-aendern",
+      "einheit": "intent:artikel-aufnehmen",
+      "mindestbestand": "intent:artikel-aufnehmen",
+      "standort": "intent:zustand-melden",
+      "zustand": "intent:zustand-melden",
+      "kaufdatum": "intent:artikel-aufnehmen",
+      "kaufpreis": "intent:artikel-aufnehmen",
+      "lieferant": "intent:artikel-aufnehmen",
+      "notizen": "intent:zustand-melden"
+    }
+  },
+  "dashboard": {
+    "focus": [
+      "Artikel unter Mindestbestand",
+      "Anzahl Artikel gesamt",
+      "Defekte oder in Reparatur befindliche Artikel",
+      "Artikel je Kategorie"
+    ],
+    "hints": [
+      "Artikel mit Menge unter Mindestbestand hervorheben",
+      "Zustand defekt und in Reparatur sichtbar machen",
+      "Schnellzugriff auf Inventar neu anlegen"
+    ],
+    "wishes": []
+  }
+}

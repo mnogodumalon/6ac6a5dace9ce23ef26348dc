@@ -1,0 +1,31 @@
+{
+  "pages": {
+    "en": {
+      "Alle Bestände sind ausreichend und alles ist einsatzbereit.": "All stock levels are sufficient and everything is ready for use.",
+      "Alle anzeigen": "Show all",
+      "Alles einsatzbereit — nichts in Reparatur.": "Everything ready for use — nothing in repair.",
+      "Artikel anzeigen": "Show items",
+      "Artikel gesamt": "Total items",
+      "Artikel je Kategorie": "Items per category",
+      "Artikel suchen": "Search items",
+      "Defekt & in Reparatur": "Defective & in repair",
+      "Defekt / Reparatur": "Defective / Repair",
+      "Ersten Artikel aufnehmen": "Add first item",
+      "Filter aufheben": "Clear filter",
+      "Gefiltert: defekt oder in Reparatur": "Filtered: defective or in repair",
+      "Gefiltert: unter Mindestbestand": "Filtered: below minimum stock",
+      "Kategorie": "Category",
+      "Keine Artikel gefunden.": "No items found.",
+      "Nachbestellen: {0}.": "Reorder: {0}.",
+      "Neuer Artikel": "New item",
+      "Nicht einsatzbereit: {0}.": "Not ready for use: {0}.",
+      "Noch kein Artikel im Lager.": "No items in inventory yet.",
+      "Richte dein Werkstattlager ein — erfasse den ersten Artikel.": "Set up your workshop inventory — add the first item.",
+      "Wieder einsatzbereit": "Ready for use again",
+      "unter Mindestbestand — nachbestellen.": "below minimum stock — reorder.",
+      "{0} — wieder einsatzbereit": "{0} — ready for use again",
+      "✓ Einsatzbereit": "✓ Ready for use"
+    }
+  },
+  "v": 1
+}

@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "Kategorien": {
+      "placeholders_set": 2,
+      "defaults_keys": [],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten ohne numerische Felder, daher keine Formeln."
+    },
+    "Lieferanten": {
+      "placeholders_set": 9,
+      "defaults_keys": [],
+      "computed_keys": [],
+      "reason": "Reine Stammdaten ohne numerische Felder oder Datumsfelder, daher keine Formeln und keine Standardwerte."
+    },
+    "Inventar": {
+      "placeholders_set": 12,
+      "defaults_keys": [
+        "menge",
+        "einheit",
+        "zustand",
+        "kaufdatum"
+      ],
+      "computed_keys": [],
+      "reason": "Keine Formel, da Kategorien und Lieferanten keine numerischen Felder liefern und es kein Datumspaar oder Gesamtfeld gibt."
+    }
+  }
+}
